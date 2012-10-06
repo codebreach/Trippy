@@ -4,7 +4,8 @@ import flask
 import json
 import pymongo
 
-from flask import Flask
+from functools import wraps
+from flask import Flask, request, current_app
 from pymongo import Connection
 
 app = Flask(__name__)
@@ -24,14 +25,33 @@ client = foursquare.Foursquare(client_id=fb_client_id,
 db = Connection(host=mongo_config)[u'heroku_app8040801']
 
 @app.route("/place/<location>")
-def hello(location):
+def get_place(location):
+    func = jsonp(place_handler)
+    return func(location)
+
+def place_handler(location):
     app.logger.debug("GOT REQUEST FOR " + location)
     output = json.dumps(get_4sq_place(location))
-    return output
+    return {'data' : output}
 
 @app.route("/instagram/callback")
 def instagram_callback():
     return "asd"
+
+
+def jsonp(func):
+    """Wraps JSONified output for JSONP requests."""
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        callback = request.args.get('callback', False)
+        if callback:
+            data = str(func(*args, **kwargs)['data'])
+            content = str(callback) + '(' + data + ')'
+            mimetype = 'application/javascript'
+            return current_app.response_class(content, mimetype=mimetype)
+        else:
+            return func(*args, **kwargs)
+    return decorated_function
 
 def get_4sq_place(location):
     places = client.venues.search(params={'near':location})
