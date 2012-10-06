@@ -50,7 +50,7 @@ def jsonp(func):
             mimetype = 'application/javascript'
             return current_app.response_class(content, mimetype=mimetype)
         else:
-            return func(*args, **kwargs)
+            return func(*args, **kwargs)['data']
     return decorated_function
 
 def get_4sq_place(location):
