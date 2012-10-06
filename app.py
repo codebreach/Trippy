@@ -1,5 +1,6 @@
 import os
 import foursquare
+import flask
 import json
 import pymongo
 
@@ -21,10 +22,6 @@ client = foursquare.Foursquare(client_id=fb_client_id,
                                redirect_uri='http://hidden-inlet-2627.herokuapp.com/callback')
 
 db = Connection(host=mongo_config)[u'heroku_app8040801']
-
-@app.route("/")
-def hello():
-    return "Hello World!"
 
 @app.route("/place/<location>")
 def hello(location):
@@ -50,6 +47,10 @@ def get_4sq_place(location):
 if __name__ == "__main__":
     # Bind to PORT if defined, otherwise default to 5000.
     port = int(os.environ.get('PORT', 5000))
+    from werkzeug import SharedDataMiddleware
+    app.wsgi_app = SharedDataMiddleware(app.wsgi_app, {
+      '/': os.path.join(os.path.dirname(__file__), 'client/app')
+    })
     app.debug = True
     app.run(host='0.0.0.0', port=port)
     
