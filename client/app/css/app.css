@@ -64,3 +64,11 @@ body{
   width:160px;
   height:160px;
 }
+
+.accordion-toggle {
+  font-size:16px;
+}
+.accordion-inner {
+  font-size:12px;
+  margin-left:15px;
+}
