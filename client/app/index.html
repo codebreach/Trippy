@@ -31,7 +31,6 @@
     </div>
 
 
-
     <div class = "row">
 
       <div class="alert fade in">
@@ -48,7 +47,9 @@
             <div class="thumbnail">
 
           
-            <img ng-src={{venue.img}}> 
+            <div ng-controller="get_instagram_image">
+              <img ng-src={{img}}/>
+            </div> 
 
           <!--  <div class = "thumbnail_image_container" ng:controller="setBackgroundImage" ng:style="mystyle">
                 <i class="icon-heart pull-right"></i>
@@ -63,6 +64,7 @@
 
 
       </div>
+      
       <div class="span4">
           <div class="span4 affix">
             <div class="accordion" id="accordion_side">
@@ -94,6 +96,7 @@
 
           </div>
       </div>
+
     </div>
   </div>
 
